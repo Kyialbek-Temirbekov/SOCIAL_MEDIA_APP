@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+  <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/resources/image.css">
+  <script type="text/javascript">
+    if(performance.navigation.type == 2){
+      location.reload(true);
+    }
+  </script>
+</head>
+<body>
+
+<div class="container-xxl">
+  <header class="pt-xl-4">
+    <nav class="row text-center">
+      <div class="col"><a href="/home">Lofty</a></div><br/>
+      <div class="col">
+        <form th:method="POST" th:action="@{/image/search/1}">
+          <input type="text" name="search" placeholder="Search works"/>
+        </form>
+      </div>
+      <div class="col">
+        <a href="/image/new">Post your work</a><br/><br/>
+      </div>
+      <div class="col"><a href="/image/favorites">Favorites</a></div>
+      <div class="col"><a href="/logout">Log out</a></div>
+    </nav>
+  </header><hr>
+
+  <div class="row">
+    <div class="col pt-xl-5 p-lg-5">
+      <div>
+        <span class="text-muted">Name</span><br/>
+        <span th:text="${user.getName()}">Name</span><br/>
+      </div>
+      <div th:if="${!user.getBirthDay().isEmpty()}">
+        <span class="text-muted">Birthday</span><br/>
+        <span th:text="${user.getBirthDay()}">Birthday</span><br/>
+      </div>
+      <div th:if="${user.getGender()}">
+        <span class="text-muted">Gender</span><br/>
+        <span th:text="${user.getGender()}">Gender</span><br/>
+      </div><br/><br/>
+      <div>
+        <a href="/edit">EDIT</a><br/><br/>
+      </div>
+
+      <div>
+        <a href="/image/favorites">FAVORITES</a><br/><br/>
+      </div>
+
+      <div>
+        <a href="/subscriptions">SUBSCRIPTIONS</a><br/><br/>
+      </div>
+    </div>
+    <div class="col"><img src="/get-photo" style="max-width: 500px"></div>
+  </div><br/>
+
+  <hr/>
+
+  <div class="row row-cols-4 pb-xl-5">
+    <div th:each="image: ${imageList}" class="col text-center gy-5 pb-xl-3">
+      <a th:href="@{/image/{id}(id=${image.getId()})}">
+        <img th:src="@{/image/get-image/{id}(id=${image.getId()})}" class="content-image"><br/>
+        <span th:text="${image.getTitle()}">Title</span><br/><br/>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="/resources/bootstrap/js/bootstrap.js"></script>
+
+</body>
+</html>

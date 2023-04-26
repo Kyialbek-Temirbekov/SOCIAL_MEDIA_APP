@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Lofty: ' + image.getTitle()}">Lofty</title>
+    <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/resources/image.css">
+    <script type="text/javascript">
+        if(performance.navigation.type == 2){
+            location.reload(true);
+        }
+    </script>
+</head>
+<body>
+
+<div class="container-xxl">
+    <header class="pt-xl-4">
+        <nav class="row text-center">
+            <div class="col"><a href="/home">Lofty</a></div><br/>
+            <div class="col">
+                <form th:method="POST" th:action="@{/image/search/1}">
+                    <input type="text" name="search" placeholder="Search works"/>
+                </form>
+            </div>
+            <div class="col"><a href="/image/new">Post your work</a><br/><br/></div>
+            <div class="col"><a href="/image/favorites">Favorites</a></div>
+            <div class="col"><a href="/show"><img src="/get-photo" class="mid-image"></a></div>
+        </nav>
+    </header><hr>
+
+    <div>
+        <div class="row">
+            <div class="col">
+                <img th:src="@{/image/get-image/{id}(id=${image.getId()})}" style="max-width:900px; max-height:100%;">
+            </div>
+            <div class="col">
+                <span th:style="${'font-weight:bold'}" th:text="${image.getTitle()}">Title</span><br/>
+                <div th:unless="${image.getCaption().equals('')}">
+                    <span class="text-muted">Description</span><br/>
+                    <span th:text="${image.getCaption()}">Caption</span><br/>
+                </div>
+                <span class="text-muted">Status</span><br/>
+                <span th:text="${image.getStatus()}">Status</span><br/>
+                <span class="text-muted">Posted at</span><br/>
+                <span th:text="${image.getDate()}">Date</span><br/>
+                <div class="row w-50">
+                    <div class="col">
+                        <form th:method="PATCH" th:action="@{/image/like/{id}(id=${image.getId()})}">
+                            <button class="like-b" th:style="${image.isLiked() ? 'color: red' : 'color: #D3D3D3'}"
+                                    type="submit">&hearts;</button>
+                        </form>
+                    </div>
+                    <div th:text="${image.getLikedUsers().size()}" class="col" style="padding-top: 25px; margin-left: -50px">Likes</div><br/><br/>
+                </div><br/>
+                <form th:method="GET" th:action="@{/image/edit/{id}(id=${image.getId()})}">
+                    <input type="submit" value="Edit" class="btn btn-outline-success">
+                </form><br/>
+
+                <form th:method="DELETE" th:action="@{/image/{id}(id=${image.getId()})}">
+                    <input type="submit" value="Delete" class="btn btn-outline-success">
+                </form><br/>
+            </div>
+        </div><br/><br/>
+
+        <div class="left-p">
+            <form th:method="POST" th:action="@{/image/comment/{imgId}(imgId=${image.getId()})}"
+                  th:object="${comment}" class="form-outline w-75 mb-4">
+                <textarea th:field="*{content}" class="form-control" required></textarea>
+                <input type="submit" value="Send" style="margin-top: -70px; margin-left: 830px" class="btn btn-primary">
+            </form><br/>
+
+            <div th:each="comment: ${comments}">
+                <!--        Comment data-->
+                <a th:href="@{/reveal/{name}(name=${comment.getOwner().getName()})}">
+                    <img th:src="@{/get-photo/{name}(name=${comment.getOwner().getName()})}" style="border-radius: 50%; width: 20px; height: 20px; object-fit: cover; margin-right: 10px;">
+                    <span th:text="${comment.getOwner().getName()}">Owner</span><br/>
+                </a>
+                <!--        Comment-->
+                <span th:text="${comment.getContent()}" id="comment">Comment</span><br/>
+                <span th:text="${comment.getDate()}">Date</span><br/><br/>
+
+                <form th:method="DELETE" th:action="@{/image/comment/{id}(id=${comment.getId()})}">
+                    <input type="hidden" name="imgId" th:value="${image.getId()}" style="display: none">
+                    <input type="submit" value="Delete">
+                </form><br/>
+
+            </div>
+        </div>
+
+    </div><br/>
+
+    <hr>
+
+    <!--Tags-->
+    <div class="left-p pb-xl-5">
+        <div th:unless="${tags.isEmpty()}" class="pb-xl-3">
+            <h5 class="p-lg-5 pb-xl-3">Tags</h5>
+
+                <p>
+                    <div th:each="tag: ${tags}" class="col" style="display: inline">
+                        <span th:text="${'#' + tag.getTag() + '  '}" class="px-1 fs-6 text-success">Tag</span>
+                    </div>
+                </p>
+
+        </div><br/>
+
+
+            <!--    add ref-->
+            <form th:method="POST" th:action="@{/image/tag/{id}(id=${image.getId()})}">
+                <input type="text" name="tags">
+                <input type="submit" value="Add" class="btn btn-outline-success">
+            </form><br/>
+            <!--    edit ref-->
+            <table th:unless="${tags.isEmpty()}" class="table table-hover w-25">
+                <tr th:each="tag: ${tags}">
+                    <form th:method="DELETE" th:action="@{/image/tag/{id}(id=${image.getId()})}">
+                        <input type="text" th:value="${tag.getId()}" name="tagId" style="display: none">
+                        <td><span th:text="${tag.getTag()}" style="width: 100px">Tag</span></td>
+                        <td class="float-end"><input type="submit" value="Delete" class="btn btn-outline-success"></td>
+                    </form>
+                </tr>
+            </table>
+
+    </div>
+</div>
+
+</body>
+</html>

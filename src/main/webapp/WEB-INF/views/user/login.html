@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+    <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+    <script type="text/javascript">
+        if(performance.navigation.type == 2){
+            location.reload(true);
+        }
+    </script>
+</head>
+<body>
+
+<div class="container-xxl row">
+        <div class="col pt-xl-5 text-center" style="width: 300px">
+            <div>
+                <form th:method="POST" th:action="@{/login}" th:object="${user}">
+                    <label for="name">Name</label><br/>
+                    <input type="text" th:field="*{name}" id="name">
+                    <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div><br/>
+                    <label for="password">Password</label><br/>
+                    <input type="password" th:field="*{password}" id="password"><br/>
+                    <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div><br/>
+                    <input type="submit" value="Login" class="btn btn-outline-primary"><br/><br/>
+                    <div th:if="${error}" th:text="${error}" style="color: red">Error</div>
+                </form>
+            </div><br/>
+
+            <div>Don't have an account? <a href="/new"> Sign up</a></div>
+        </div>
+</div>
+
+</body>
+</html>

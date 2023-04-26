@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+    <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/resources/image.css">
+    <script type="text/javascript">
+        if(performance.navigation.type == 2){
+            location.reload(true);
+        }
+    </script>
+</head>
+<body>
+
+<div class="container-xxl pb-xl-5">
+    <header class="pt-xl-4">
+        <nav class="row text-center">
+            <div class="col"><a href="/home">Lofty</a></div><br/>
+            <div class="col">
+                <form th:method="POST" th:action="@{/image/search/1}">
+                    <input type="text" name="search" placeholder="Search works"/>
+                </form>
+            </div>
+            <div class="col"><a href="/image/new">Post your work</a><br/><br/></div>
+            <div class="col"><a href="/image/favorites">Favorites</a></div>
+            <div class="col"><a href="/show"><img src="/get-photo" class="mid-image"></a></div>
+        </nav>
+    </header><hr>
+
+    <div class="col pt-xl-3 text-center">
+        <form th:method="POST" th:action="@{/image}" th:object="${image}" enctype="multipart/form-data">
+            <label for="title">Title</label><br/>
+            <input type="text" th:field="*{title}" id="title">
+            <div style="color: red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</div><br/>
+            <label for="caption">Caption</label><br/>
+            <textarea th:field="*{caption}" id="caption"></textarea>
+            <div style="color: red" th:if="${#fields.hasErrors('caption')}" th:errors="*{caption}">Caption Error</div><br/>
+            <input type="file" th:field="*{img}" id="img" accept="image/png, image/jpg, image/gif, image/jpeg" onchange="loadFile(event)" style="display: none;">
+            <p><label for="img" style="cursor: pointer;">Upload Image</label></p>
+            <img id="output" width="200" /><br/>
+            <div style="color: red" th:if="${#fields.hasErrors('img')}" th:errors="*{img}">Image Error</div>
+            <label for="tags">Tags</label><br/>
+            <input type="text" th:field="*{tags}" id="tags">
+            <div style="color: red" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}">Tags Error</div><br/>
+            <span>Status</span><br/>
+            <span th:each="Status : ${T(org.example.models.Status).values()}">
+                <input type="radio" th:field="*{status}" th:value="${Status}">
+                <label th:for="${Status}" th:text="${Status}"></label>
+            </span><br/><br/>
+            <div style="color: red" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Status Error</div><br/>
+            <input type="submit" value="Post" class="btn btn-outline-primary">
+        </form>
+    </div>
+</div>
+
+<script>
+    var loadFile = function(event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+
+
+</body>
+</html>

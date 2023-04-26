@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+  <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/resources/image.css">
+  <script type="text/javascript">
+    if(performance.navigation.type == 2){
+      location.reload(true);
+    }
+  </script>
+</head>
+<body>
+
+<div class="container-xxl">
+  <header class="pt-xl-4">
+    <nav class="row text-center">
+      <div class="col"><a href="/home">Lofty</a></div><br/>
+      <div class="col">
+        <form th:method="POST" th:action="@{/image/search/1}">
+          <input type="text" name="search" placeholder="Search works"/>
+        </form>
+      </div>
+      <div class="col"><a href="/image/new">Post your work</a><br/><br/></div>
+      <div class="col"><a href="/image/favorites">Favorites</a></div>
+      <div class="col"><a href="/show"><img src="/get-photo" class="mid-image"></a></div>
+    </nav>
+  </header><hr>
+
+  <div class="p-lg-5">
+    <span th:style="${'font-weight: bold'}" th:text="${searchQuery}">Search</span><br/>
+    <span th:text="${paginationResult.getTotalRecords() + ' results'}">Results</span>
+  </div>
+
+  <div class="row row-cols-4">
+    <div th:each="image: ${paginationResult.getRecords()}" class="col text-center gy-5 pb-xl-3">
+      <a th:href="@{/image/reveal/{id}(id=${image.getId()})}">
+        <img th:src="@{/image/get-image/{id}(id=${image.getId()})}" class="content-image">
+      </a>
+      <div class="row text-start m-lg-4">
+        <div class="col">
+          <span th:text="${image.getTitle()}">Title</span><br/>
+          <a th:href="@{/reveal/{name}(name=${image.getOwner().getName()})}">
+            <div style="display: flex; padding-top: 10px">
+              <img th:src="@{/get-photo/{name}(name=${image.getOwner().getName()})}" class="sm-image">
+              <span th:text="${image.getOwner().getName()}">Owner</span>
+            </div>
+          </a>
+        </div>
+        <div class="col">
+          <form th:method="PATCH" th:action="@{/image/like/{id}(id=${image.getId()})}">
+            <button class="like-b" th:style="${image.isLiked() ? 'color: red' : 'color: #D3D3D3'}"
+                    type="submit">&hearts;</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row text-center pt-xl-5 pb-xl-5">
+    <form th:if="${paginationResult.getCurrentPageNumber()!=1}" th:method="POST" class="col gy-5"
+          th:action="@{/image/search/{page}(page=${paginationResult.getCurrentPageNumber()-1})}">
+      <input type="text" name="search" th:value="${searchQuery}" style="display: none"/>
+      <input type="submit" value="Prev" class="btn btn-primary">
+    </form>
+    <form th:if="${paginationResult.getCurrentPageNumber()!=paginationResult.getLastPageNumber()
+        && paginationResult.getTotalRecords()!=0}" th:method="POST" class="col gy-5"
+          th:action="@{/image/search/{page}(page=${paginationResult.getCurrentPageNumber()+1})}">
+      <input type="text" name="search" th:value="${searchQuery}" style="display: none"/>
+      <input type="submit" value="Next" class="btn btn-primary">
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

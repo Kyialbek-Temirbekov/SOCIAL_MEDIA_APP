@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+    <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/resources/image.css">
+    <script type="text/javascript">
+        if(performance.navigation.type == 2){
+            location.reload(true);
+        }
+    </script>
+</head>
+<body>
+
+<div class="container-xxl row">
+    <div class="col pt-xl-5 text-center">
+        <div>
+            <form th:method="POST" th:action="@{/}" th:object="${user}" enctype="multipart/form-data">
+                <label for="name">Name</label><br/>
+                <input type="text" th:field="*{name}" id="name">
+                <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div><br/>
+                <label for="password">Password</label><br/>
+                <input type="password" th:field="*{password}" id="password">
+                <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name Error</div><br/>
+                <label for="birthDay">Birthday</label><br/>
+                <input type="date" th:field="*{birthDay}" id="birthDay">
+                <div style="color: red" th:if="${#fields.hasErrors('birthDay')}" th:errors="*{birthDay}">Birthday Error</div><br/><br/>
+                <span>Gender</span><br/>
+                <span th:each="Gender : ${T(org.example.models.Gender).values()}">
+                    <input type="radio" th:field="*{gender}" th:value="${Gender}">
+                    <label th:for="${Gender}" th:text="${Gender}"></label>
+                </span>
+                <div style="color: red" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">Gender Error</div><br/>
+                <input type="file" th:field="*{photo}" id="photo" accept="image/png, image/jpg, image/gif, image/jpeg" onchange="loadFile(event)" style="display: none;"/><br/>
+                <p><label for="photo" style="cursor: pointer;">Upload Image</label></p>
+                <img id="output" width="300" /><br/>
+                <div style="color: red" th:if="${#fields.hasErrors('photo')}" th:errors="*{photo}">Photo Error</div><br/>
+                <input type="submit" value="Join" class="btn btn-outline-primary"><br/>
+            </form>
+        </div><br/>
+
+        <div class="pb-xl-5">Already have an account? <a href="/login"> Log in</a></div>
+    </div>
+</div>
+
+<script>
+    var loadFile = function(event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+    <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/resources/image.css">
+    <script type="text/javascript">
+        if(performance.navigation.type == 2){
+            location.reload(true);
+        }
+    </script>
+</head>
+<body>
+
+<div class="container-xxl">
+    <header class="pt-xl-4">
+        <nav class="row text-center">
+            <div class="col"><a href="/home">Lofty</a></div><br/>
+            <div class="col">
+                <form th:method="POST" th:action="@{/image/search/1}">
+                    <input type="text" name="search" placeholder="Search works"/>
+                </form>
+            </div>
+            <div class="col"><a href="/image/new">Post your work</a><br/><br/></div>
+            <div class="col"><a href="/image/favorites">Favorites</a></div>
+            <div class="col"><a href="/show"><img src="/get-photo" class="mid-image"></a></div>
+        </nav>
+    </header><hr>
+
+    <div>
+        <div class="row pb-xl-5">
+            <div class="col"><img th:src="@{/image/get-image/{id}(id=${image.getId()})}" style="max-width: 900px; max-height:100%;"></div>
+            <div class="col">
+                <span th:style="${'font-weight:bold'}" th:text="${image.getTitle()}">Title</span><br/>
+                <a th:href="@{/reveal/{name}(name=${image.getOwner().getName()})}">
+                    <img th:src="@{/get-photo/{name}(name=${image.getOwner().getName()})}"
+                         style="border-radius: 50%; width: 20px; height: 20px; object-fit: cover; margin-right: 10px;">
+                    <span th:text="${image.getOwner().getName()}">Owner</span><br/>
+                </a>
+                <div th:unless="${image.getCaption().equals('')}">
+                    <span>Description</span><br/>
+                    <span th:text="${image.getCaption()}">Caption</span><br/>
+                </div>
+                <span>Posted at</span><br/>
+                <span th:text="${image.getDate()}">Date</span><br/><br/>
+                <div class="row w-50">
+                    <div class="col">
+                        <form th:method="PATCH" th:action="@{/image/like/{id}(id=${image.getId()})}">
+                            <button class="like-b" th:style="${image.isLiked() ? 'color: red' : 'color: #D3D3D3'}"
+                                    type="submit">&hearts;</button>
+                        </form>
+                    </div>
+                    <div th:text="${image.getLikedUsers().size()}" class="col" style="padding-top: 25px; margin-left: -50px">Likes</div><br/><br/>
+                </div>
+            </div>
+        </div>
+
+<!--        Comment-->
+
+
+        <div class="left-p">
+            <form th:method="POST" th:action="@{/image/comment/{imgId}(imgId=${image.getId()})}"
+                  th:object="${comment}" class="form-outline w-75 mb-4">
+                <textarea th:field="*{content}" class="form-control" required></textarea>
+                <input type="submit" value="Send" style="margin-top: -70px; margin-left: 830px" class="btn btn-primary">
+            </form><br/>
+
+            <div th:each="comment: ${comments}">
+                <!--        Comment data-->
+                <a th:href="@{/reveal/{name}(name=${comment.getOwner().getName()})}">
+                    <img th:src="@{/get-photo/{name}(name=${comment.getOwner().getName()})}"
+                         style="border-radius: 50%; width: 20px; height: 20px; object-fit: cover; margin-right: 10px">
+                    <span th:text="${comment.getOwner().getName()}">Owner</span><br/>
+                </a>
+                <!--        Comment-->
+                <span th:text="${comment.getContent()}" id="comment">Comment</span><br/>
+                <span th:text="${comment.getDate()}">Date</span><br/><br/>
+
+                <form th:if="${currentUser.getName() == comment.getOwner().getName() ||
+                        currentUser.getName() == image.getOwner().getName()}"
+                      th:method="DELETE" th:action="@{/image/comment/{id}(id=${comment.getId()})}">
+                    <input type="hidden" name="imgId" th:value="${image.getId()}" style="display: none">
+                    <input type="submit" value="Delete" class="btn btn-outline-primary">
+                </form><br/>
+
+            </div>
+        </div>
+
+    </div><br/>
+
+    <hr>
+
+    <div>
+        <h3 class="text-center">Related images</h3>
+    </div>
+
+    <div class="row row-cols-4 pb-xl-5">
+        <div th:each="image: ${relatedImages}" class="col text-center gy-5 pb-xl-3">
+            <a th:href="@{/image/reveal/{id}(id=${image.getId()})}">
+                <img th:src="@{/image/get-image/{id}(id=${image.getId()})}" class="content-image">
+            </a>
+            <div class="row text-start m-lg-4">
+                <div class="col">
+                    <span th:text="${image.getTitle()}">Title</span><br/>
+                    <a th:href="@{/reveal/{name}(name=${image.getOwner().getName()})}">
+                        <div style="display: flex; padding-top: 10px">
+                            <img th:src="@{/get-photo/{name}(name=${image.getOwner().getName()})}" class="sm-image">
+                            <span th:text="${image.getOwner().getName()}">Owner</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <form th:method="PATCH" th:action="@{/image/like/{id}(id=${image.getId()})}">
+                        <button class="like-b" th:style="${image.isLiked() ? 'color: red' : 'color: #D3D3D3'}"
+                                type="submit">&hearts;</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

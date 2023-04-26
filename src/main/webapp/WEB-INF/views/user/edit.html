@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lofty</title>
+  <link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/resources/image.css">
+  <script type="text/javascript">
+    if(performance.navigation.type == 2){
+      location.reload(true);
+    }
+  </script>
+</head>
+<body>
+
+<div class="container-xxl">
+  <header class="pt-xl-4">
+    <nav class="row text-center">
+      <div class="col"><a href="/home">Lofty</a></div><br/>
+      <div class="col">
+        <form th:method="POST" th:action="@{/image/search/1}">
+          <input type="text" name="search" placeholder="Search works"/>
+        </form>
+      </div>
+      <div class="col"><a href="/image/new">Post your work</a><br/><br/></div>
+      <div class="col"><a href="/image/favorites">Favorites</a></div>
+      <div class="col"><a href="/show"><img src="/get-photo" class="mid-image"></a></div>
+    </nav>
+  </header><hr>
+
+  <!--Edit profile-->
+  <div class="left-p pt-xl-5 pb-xl-5">
+    <h4>Profile</h4><br/><br/>
+    <form th:method="PATCH" th:action="@{/profile}" th:object="${user}">
+      <label for="birthDay">Birthday</label><br/>
+      <input type="date" th:field="*{birthDay}" id="birthDay"><br/>
+      <span>Gender</span><br/>
+      <div th:each="Gender : ${T(org.example.models.Gender).values()}">
+        <input type="radio" th:field="*{gender}" th:value="${Gender}">
+        <label th:for="${Gender}" th:text="${Gender}"></label>
+      </div><br/>
+      <input type="submit" value="Save" class="btn btn-outline-primary"><br/>
+    </form>
+  </div><br/>
+
+  <hr>
+
+  <!--Edit photo-->
+  <div class="left-p pt-xl-5 pb-xl-5">
+    <h4>Photo</h4><br/><br/>
+    <div>
+      <form th:method="PATCH" th:action="@{/photo}" enctype="multipart/form-data">
+        <input type="file" name="photo" id="photo" accept="image/*" onchange="loadFile(event)" style="display: none;"/>
+        <p><label for="photo" style="cursor: pointer;">Upload Image</label></p>
+        <p><img id="output" width="300" /></p>
+        <input type="submit" value="Save" class="btn btn-outline-primary"><br/>
+      </form>
+    </div><br/>
+    <div>
+      <form th:method="DELETE" th:action="@{/photo}">
+        <input type="submit" value="Delete" class="btn btn-outline-primary">
+      </form>
+    </div>
+  </div>
+
+  <script>
+    var loadFile = function(event) {
+      var image = document.getElementById('output');
+      image.src = URL.createObjectURL(event.target.files[0]);
+    };
+  </script>
+
+  <hr>
+
+  <!--Edit account-->
+  <div class="pt-xl-5 pb-xl-5 left-p">
+    <h4>Account</h4><br/><br/>
+    <div>
+      <form th:method="PATCH" th:action="@{/name}" th:object="${user}">
+        <span>Name </span><br/>
+        <input type="text" th:field="*{name}">
+        <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div><br/>
+        <input style="display: none" type="text" th:field="*{password}" id="password">
+        <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div><br/>
+        <input type="submit" value="Update" class="btn btn-outline-primary">
+      </form>
+    </div><br/>
+
+
+    <div>
+      <form th:method="PATCH" th:action="@{/password}">
+        <span>Password</span><br/>
+        <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password" required/><br/>
+        <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required/>
+
+        <input type="submit" value="Update" class="btn btn-outline-primary"/>
+      </form>
+    </div><br/>
+
+
+
+    <div>
+      <a href="/logout">Log out</a>
+    </div><br/>
+
+    <div>
+      <span id="button" onclick="display()" style="cursor: pointer">Delete Account</span>
+      <form th:action="@{/account}" th:method="DELETE" id="form" style="display: none">
+        <input type="password" name="password" placeholder="Enter password" required/><br/><br/>
+        <input type="submit" value="Delete Account" class="btn btn-outline-primary"/>
+      </form>
+    </div>
+  </div>
+</div><br/>
+
+<script>
+  function display() {
+    document.getElementById("form").style.display = "block";
+    document.getElementById("button").style.display = "none";
+  }
+</script>
+
+</body>
+</html>
