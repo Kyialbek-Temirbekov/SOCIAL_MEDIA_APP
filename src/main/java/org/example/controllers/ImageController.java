@@ -115,13 +115,6 @@ public class ImageController {
         if(name == null)
             return "redirect:/login";
         Image image = imageDao.show(id);
-        System.out.println(image.getOwner().getName());
-        System.out.println("hello");
-
-
-        //////////
-
-
         List<Image> relatedImages = imageDao.findRelated(id);
 
         enrich(image, name);

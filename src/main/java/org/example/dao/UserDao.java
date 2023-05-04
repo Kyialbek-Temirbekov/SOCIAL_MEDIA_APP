@@ -99,9 +99,12 @@ public class UserDao  {
         byte[] photo = null;
         User user = session.createQuery("FROM User where name = :name", User.class)
                 .setParameter("name", name).getSingleResultOrNull();
-        if(file.isEmpty())
+        if(file==null)
+            photo = imageFile;
+        else if(file.isEmpty())
             return;
-        photo = file.getBytes();
+        else
+            photo = file.getBytes();
         user.setPhoto(photo);
     }
     public void subscribe(String userName, String subscriptionName) {
