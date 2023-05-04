@@ -30,7 +30,7 @@
 
     <div class="row row-cols-4">
         <div th:each="image: ${imagesByDate}" class="col text-center gy-5 pb-xl-3">
-            <a th:href="@{/image/reveal/{id}(id=${image.getId()})}">
+            <a target="_blank" th:href="@{/image/reveal/{id}(id=${image.getId()})}">
                 <img th:src="@{/image/get-image/{id}(id=${image.getId()})}" class="content-image"><br/>
             </a>
             <div class="row text-start m-lg-4">

@@ -21,7 +21,7 @@ public class Comment {
     @JoinColumn(name = "img_id", referencedColumnName = "id")
     private Image image;
     @ManyToOne
-    @JoinColumn(name = "owner", referencedColumnName = "name")
+    @JoinColumn(name = "owner", referencedColumnName = "id")
     private User owner;
 
     public Comment() {}

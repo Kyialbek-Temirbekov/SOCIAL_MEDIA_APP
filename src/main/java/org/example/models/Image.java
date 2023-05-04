@@ -25,8 +25,8 @@ public class Image {
     private String date;
     @Transient
     private boolean liked;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner", referencedColumnName = "name")
+    @ManyToOne()
+    @JoinColumn(name = "owner", referencedColumnName = "id")
     private User owner;
     @OneToMany(mappedBy = "image")
     private List<Tag> tags;

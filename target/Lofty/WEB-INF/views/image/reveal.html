@@ -91,13 +91,13 @@
 
     <hr>
 
-    <div>
+    <div th:if="${!relatedImages.isEmpty()}">
         <h3 class="text-center">Related images</h3>
     </div>
 
     <div class="row row-cols-4 pb-xl-5">
         <div th:each="image: ${relatedImages}" class="col text-center gy-5 pb-xl-3">
-            <a th:href="@{/image/reveal/{id}(id=${image.getId()})}">
+            <a target="_blank" th:href="@{/image/reveal/{id}(id=${image.getId()})}">
                 <img th:src="@{/image/get-image/{id}(id=${image.getId()})}" class="content-image">
             </a>
             <div class="row text-start m-lg-4">
