@@ -24,7 +24,8 @@ public class CommentDao {
     public void save(String owner, int imgId, Comment comment) {
         Session session = sessionFactory.getCurrentSession();
         comment.setDate(LocalDate.now().toString());
-        comment.setOwner(session.load(User.class, owner));
+        comment.setOwner(session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", owner).getSingleResultOrNull());
         comment.setImage(session.load(Image.class, imgId));
         session.persist(comment);
     }

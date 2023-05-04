@@ -9,6 +9,9 @@ import java.util.List;
 @Table(name = "user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
     @Column(name = "name")
     private String name;
     @Column(name = "password")
@@ -45,6 +48,14 @@ public class User {
         this.birthDay = birthDay;
         this.gender = gender;
         this.photo = photo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

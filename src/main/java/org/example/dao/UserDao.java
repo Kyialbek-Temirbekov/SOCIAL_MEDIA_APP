@@ -48,7 +48,8 @@ public class UserDao  {
     }
     public User show(String name) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         if(user != null) {
             Hibernate.initialize(user.getLikedImages());
             Hibernate.initialize(user.getSubscribers());
@@ -57,12 +58,14 @@ public class UserDao  {
     }
     public byte[] getPhoto(String name) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         return user.getPhoto();
     }
     public boolean identical(String name, String password) {
         Session session = sessionFactory.getCurrentSession();
-        Optional<User> user = Optional.ofNullable(session.get(User.class, name));
+        Optional<User> user = Optional.ofNullable(session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull());
         return user.isPresent() && user.get().getPassword().equals(Integer.toString(password.hashCode()));
     }
     public void updateName(String name, UserFDO userFDO) {
@@ -72,26 +75,30 @@ public class UserDao  {
     }
     public void updatePassword(String name, String password) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.load(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         user.setPassword(Integer.toString(password.hashCode()));
     }
     public void deleteAccount(String name) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.load(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         user.getImages().forEach(session::remove);
         user.getComments().forEach(session::remove);
         session.remove(user);
     }
     public void updateProfile(String name, UserFDO updatedUser) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.load(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         user.setBirthDay(updatedUser.getBirthDay());
         user.setGender(updatedUser.getGender());
     }
     public void updatePhoto(String name, MultipartFile file) throws IOException {
         Session session = sessionFactory.getCurrentSession();
         byte[] photo = null;
-        User user = session.load(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         if(file.isEmpty())
             return;
         photo = file.getBytes();
@@ -99,8 +106,10 @@ public class UserDao  {
     }
     public void subscribe(String userName, String subscriptionName) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, userName);
-        User subscription = session.get(User.class, subscriptionName);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", userName).getSingleResultOrNull();
+        User subscription = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", subscriptionName).getSingleResultOrNull();
         if(subscription.getSubscribers().contains(user)) {
             subscription.getSubscribers().remove(user);
             user.getSubscriptions().remove(subscription);
@@ -112,7 +121,8 @@ public class UserDao  {
     }
     public List<User> getSubscriptions(String name) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         Hibernate.initialize(user.getSubscriptions());
         return user.getSubscriptions();
     }

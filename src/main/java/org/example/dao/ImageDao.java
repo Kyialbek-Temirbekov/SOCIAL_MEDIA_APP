@@ -35,7 +35,8 @@ public class ImageDao {
         image.setImg(imageFDO.getImgBytes());
         image.setStatus(imageFDO.getStatus());
         image.setDate(LocalDate.now().toString());
-        image.setOwner(session.load(User.class, user));
+        image.setOwner(session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", user).getSingleResultOrNull());
 
         session.save(image);
         return image.getId();
@@ -43,7 +44,8 @@ public class ImageDao {
 
     public List<Image> index(String name) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         List<Image> images = user.getImages();
         images.forEach(image -> Hibernate.initialize(image.getLikedUsers()));
         return images;
@@ -130,7 +132,8 @@ public class ImageDao {
     public void like(int imgId, String userName) {
         Session session = sessionFactory.getCurrentSession();
         Image image = session.get(Image.class, imgId);
-        User user = session.get(User.class, userName);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", userName).getSingleResultOrNull();
         if(image.getLikedUsers().contains(user)) {
             image.getLikedUsers().remove(user);
             user.getLikedImages().remove(image);
@@ -142,7 +145,8 @@ public class ImageDao {
     }
     public List<Image> favorites(String name) {
         Session session = sessionFactory.getCurrentSession();
-        User user = session.get(User.class, name);
+        User user = session.createQuery("FROM User where name = :name", User.class)
+                .setParameter("name", name).getSingleResultOrNull();
         List<Image> images = user.getLikedImages();
         images.forEach(image -> Hibernate.initialize(image.getLikedUsers()));
         return images;

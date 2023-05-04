@@ -1,0 +1,11 @@
+# Data source configuration
+
+hibernate.driver_class=
+hibernate.connection.url=
+hibernate.connection.username=
+hibernate.connection.password=
+
+# Hibernate configuration
+
+hibernate.dialect=
+hibernate.show_sql=
