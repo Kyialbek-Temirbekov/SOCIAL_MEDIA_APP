@@ -41,10 +41,7 @@ public class ImageController {
     }
 
     @GetMapping("/new")
-    public String newImage(@SessionAttribute(value = "user", required = false) String name,
-                           @ModelAttribute("image") ImageFDO imageFDO) {
-        if(name == null)
-            return "redirect:/login";
+    public String newImage(@ModelAttribute("image") ImageFDO imageFDO) {
         return "image/new";
     }
     @PostMapping()
@@ -61,8 +58,6 @@ public class ImageController {
     @GetMapping("/{id}")
     public String show(@SessionAttribute(value = "user", required = false) String name,
                        @PathVariable("id") int id, Model model, @ModelAttribute("comment") Comment comment) {
-        if(name == null)
-            return "redirect:/login";
         Image image = imageDao.show(id);
         enrich(image, name);
         model.addAttribute("image", image);
@@ -80,10 +75,7 @@ public class ImageController {
         response.getOutputStream().close();
     }
     @GetMapping("/edit/{id}")
-    public String edit(@SessionAttribute(value = "user", required = false) String name,
-                       @PathVariable("id") int id, Model model) {
-        if(name == null)
-            return "redirect:/login";
+    public String edit(@PathVariable("id") int id, Model model) {
         model.addAttribute("image", new ImageFDO(imageDao.show(id)));
         return "image/edit";
     }
@@ -112,8 +104,6 @@ public class ImageController {
     public String reveal(@SessionAttribute(value = "user", required = false) String name,
                          @PathVariable("id") int id, Model model,
                          @ModelAttribute("comment") Comment comment) {
-        if(name == null)
-            return "redirect:/login";
         Image image = imageDao.show(id);
         List<Image> relatedImages = imageDao.findRelated(id);
 
@@ -130,8 +120,6 @@ public class ImageController {
     public String search(@SessionAttribute(value = "user", required = false) String name,
                          @PathVariable("page") int page, @RequestParam("search")
                         String query, Model model) {
-        if(name == null)
-            return "redirect:/login";
         int pageSize = 12;
         PaginationResult<Image> paginationResult = imageDao.findBySearchQuery(page,pageSize,query);
         paginationResult.getRecords().forEach(image -> enrich(image, name));
@@ -159,8 +147,6 @@ public class ImageController {
     }
     @GetMapping("/favorites")
     public String favorites(@SessionAttribute(value = "user", required = false) String name, Model model) {
-        if(name == null)
-            return "redirect:/login";
         List<Image> favorites = imageDao.favorites(name);
         favorites.forEach(image -> enrich(image, name));
         model.addAttribute("favoriteImages", favorites);

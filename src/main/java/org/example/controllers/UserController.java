@@ -37,8 +37,6 @@ public class UserController {
     }
     @GetMapping("/home")
     public String home(@SessionAttribute(value = "user", required = false) String name, Model model) {
-        if(name == null)
-            return "redirect:/login";
         List<Image> images = imageDao.findByDate();
         images.forEach(image -> enrich(image, name));
         model.addAttribute("imagesByDate", images);
@@ -81,8 +79,6 @@ public class UserController {
     }
     @GetMapping("/show")
     public String show(@SessionAttribute(value = "user", required = false) String name, Model model) {
-        if(name == null)
-            return "redirect:/login";
         model.addAttribute("user", userDao.show(name));
         model.addAttribute("imageList", imageDao.index(name));
         return "user/show";
@@ -90,8 +86,6 @@ public class UserController {
     @GetMapping("/reveal/{name}")
     public String reveal(@SessionAttribute(value = "user", required = false) String sessionName,
                          @PathVariable("name") String name, Model model) {
-        if(sessionName == null)
-            return "redirect:/login";
         List<Image> images = imageDao.index(name);
         images.forEach(image -> enrich(image, sessionName));
         User user = userDao.show(name);
@@ -120,8 +114,6 @@ public class UserController {
     }
     @GetMapping("/edit")
     public String edit(@SessionAttribute(value = "user", required = false) String name, Model model) {
-        if(name == null)
-            return "redirect:/login";
         model.addAttribute("user", new UserFDO(userDao.show(name)));
         return "user/edit";
     }
