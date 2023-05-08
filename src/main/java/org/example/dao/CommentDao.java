@@ -34,7 +34,7 @@ public class CommentDao {
         Comment comment = session.load(Comment.class, id);
         comment.setOwner(null);
         comment.setImage(null);
-        session.delete(comment);
+        session.remove(comment);
     }
     public List<Comment> findByImage(int imgId) {
         Session session = sessionFactory.getCurrentSession();
