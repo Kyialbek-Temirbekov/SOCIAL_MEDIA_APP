@@ -116,7 +116,7 @@ public class ImageController {
         model.addAttribute("currentUser", userDao.show(name));
         return "image/reveal";
     }
-    @PostMapping("/search/{page}")
+    @GetMapping("/search/{page}")
     public String search(@SessionAttribute(value = "user", required = false) String name,
                          @PathVariable("page") int page, @RequestParam("search")
                         String query, Model model) {

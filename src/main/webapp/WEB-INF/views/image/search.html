@@ -18,7 +18,7 @@
     <nav class="row text-center">
       <div class="col"><a href="/home">Lofty</a></div><br/>
       <div class="col">
-        <form th:method="POST" th:action="@{/image/search/1}">
+        <form th:method="GET" th:action="@{/image/search/1}">
           <input type="text" name="search" placeholder="Search works"/>
         </form>
       </div>
@@ -59,13 +59,13 @@
   </div>
 
   <div class="row text-center pt-xl-5 pb-xl-5">
-    <form th:if="${paginationResult.getCurrentPageNumber()!=1}" th:method="POST" class="col gy-5"
+    <form th:if="${paginationResult.getCurrentPageNumber()!=1}" th:method="GET" class="col gy-5"
           th:action="@{/image/search/{page}(page=${paginationResult.getCurrentPageNumber()-1})}">
       <input type="text" name="search" th:value="${searchQuery}" style="display: none"/>
       <input type="submit" value="Prev" class="btn btn-primary">
     </form>
     <form th:if="${paginationResult.getCurrentPageNumber()!=paginationResult.getLastPageNumber()
-        && paginationResult.getTotalRecords()!=0}" th:method="POST" class="col gy-5"
+        && paginationResult.getTotalRecords()!=0}" th:method="GET" class="col gy-5"
           th:action="@{/image/search/{page}(page=${paginationResult.getCurrentPageNumber()+1})}">
       <input type="text" name="search" th:value="${searchQuery}" style="display: none"/>
       <input type="submit" value="Next" class="btn btn-primary">

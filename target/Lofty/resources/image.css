@@ -9,15 +9,15 @@
 
 .mid-image {
     border-radius: 50%;
-    width: 65px;
-    height: 65px;
+    width: 55px;
+    height: 55px;
     object-fit: cover
 }
 
 .sm-image {
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     object-fit: cover;
     margin-right: 10px;
 }
