@@ -7,6 +7,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,9 +37,10 @@ public class UserDao  {
     }
     public void save(UserFDO userFDO) throws IOException {
         Session session = sessionFactory.getCurrentSession();
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
         User user = new User();
         user.setName(userFDO.getName());
-        user.setPassword(Integer.toString(userFDO.getPassword().hashCode()));
+        user.setPassword(encoder.encode(userFDO.getPassword()));
         user.setBirthDay(userFDO.getBirthDay());
         user.setGender(userFDO.getGender());
         if(userFDO.getPhoto().isEmpty())
@@ -64,9 +67,10 @@ public class UserDao  {
     }
     public boolean identical(String name, String password) {
         Session session = sessionFactory.getCurrentSession();
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
         Optional<User> user = Optional.ofNullable(session.createQuery("FROM User where name = :name", User.class)
                 .setParameter("name", name).getSingleResultOrNull());
-        return user.isPresent() && user.get().getPassword().equals(Integer.toString(password.hashCode()));
+        return user.isPresent() && encoder.matches(password, user.get().getPassword());
     }
     public void updateName(String name, UserFDO userFDO) {
         Session session = sessionFactory.getCurrentSession();
