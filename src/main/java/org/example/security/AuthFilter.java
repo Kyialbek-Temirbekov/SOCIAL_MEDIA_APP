@@ -25,7 +25,7 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        boolean authenticated = defaultAuthentication(request, new String[] {"/login", "/new"});
+        boolean authenticated = defaultAuthentication(request, {"/login", "/new"});
         if(authenticated) {
             filterChain.doFilter(servletRequest, servletResponse);
         }
